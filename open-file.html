@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ファイルを開く</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+    }
+    label,
+    button {
+      display: block;
+      margin-top: 12px;
+    }
+    input {
+      width: 100%;
+      max-width: 500px;
+      padding: 8px;
+      font-size: 32px;
+    }
+    .hint {
+      color: #555;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 入力画面：ファイルパスを入力します -->
+  <div id="inputScreen">
+    <h1>ファイルパスを入力して開く</h1>
+    <label for="filepath">ファイルパス</label>
+    <input id="filepath" type="text" placeholder="例: /Users/yourname/Desktop/sample.txt" />
+    <button id="openBtn">OK</button>
+    <p class="hint">ローカルファイルを開くには、ファイルをこのHTMLと同じブラウザで開き、ブラウザがローカルファイルアクセスを許可している必要があります。</p>
+  </div>
+
+  <!-- 確認画面：入力したURLを確認してから開きます -->
+  <div id="confirmScreen" hidden>
+    <h1>確認</h1>
+    <p>以下のURLを開きます。内容を確認してから「開く」または「戻る」を選択してください。</p>
+    <div id="confirmUrl" class="confirm-url"></div>
+    <button id="confirmOpenBtn">開く</button>
+    <button id="backBtn" type="button">戻る</button>
+  </div>
+
+  <script>
+    // 画面要素を取得します
+    const openBtn = document.getElementById('openBtn');
+    const confirmOpenBtn = document.getElementById('confirmOpenBtn');
+    const backBtn = document.getElementById('backBtn');
+    const input = document.getElementById('filepath');
+    const inputScreen = document.getElementById('inputScreen');
+    const confirmScreen = document.getElementById('confirmScreen');
+    const confirmUrl = document.getElementById('confirmUrl');
+
+    // 入力画面のOKボタン：確認画面に遷移します
+    openBtn.addEventListener('click', () => {
+      const path = input.value.trim();
+      if (!path) {
+        alert('ファイルパスを入力してください。');
+        return;
+      }
+
+      const fileUrl = 'file://' + path;
+      confirmUrl.textContent = fileUrl;
+      confirmScreen.hidden = false;
+      inputScreen.hidden = true;
+    });
+
+    // 確認画面の開くボタン：実際にファイルを開きます
+    confirmOpenBtn.addEventListener('click', () => {
+      const fileUrl = confirmUrl.textContent;
+      window.location.href = fileUrl;
+    });
+
+    // 戻るボタン：入力画面に戻ります
+    backBtn.addEventListener('click', () => {
+      confirmScreen.hidden = true;
+      inputScreen.hidden = false;
+    });
+  </script>
+</body>
+</html>
